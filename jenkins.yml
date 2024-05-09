@@ -5,6 +5,7 @@
       yum:
         name: java-1.8.0-openjdk
         state: present
+
     - name: ensure jenkins repo is installed
       yum_respository:
         name: jenkins
@@ -13,16 +14,19 @@
         gpgkey: https://jenkins-ci.org/redhat/jenkins-ci.org.key
         gpgcheck: yes
         enabled: yes
+
     - name: Ensure Jenkins is installed
       yum:
         name: jenkins
         update_cache: yes
         state: present
+
     - name: Enable and start the jenkins service
       service:
         name: jenkins
         enabled: yes
         state: started
+        
     - name: Open Firewall Port
       firewalld:
         zone: public
