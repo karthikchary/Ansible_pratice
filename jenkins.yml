@@ -1,9 +1,10 @@
 ---
 - hosts: jenkins
-  roles:
-    - role: ansiblebit.oracle-java
-      oracle_java_set_as_default: yes
   tasks:
+    - name: Install Java
+      yum:
+        name: java-1.8.0-openjdk
+        state: present
     - name: ensure jenkins repo is installed
       yum_respository:
         name: jenkins
