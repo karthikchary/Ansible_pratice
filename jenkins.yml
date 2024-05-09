@@ -1,10 +1,32 @@
 ---
-- name: Update web servers
-  hosts: jenkins
-  remote_user: root
-  gather_facts: yes
+- hosts: jenkins
+  roles:
+    - role: ansiblebit.oracle-java
+      oracle_java_set_as_default: yes
   tasks:
-    - name: Ensure apache is at the latest version
-      ansible.builtin.package:
-        name: httpd
-        state: latest
+    - name: ensure jenkins repo is installed
+      yum_respository:
+        name: jenkins
+        state: present
+        baseurl: http://pkg.jenkins.io/redhat
+        gpgkey: https://jenkins-ci.org/redhat/jenkins-ci.org.key
+        gpgcheck: yes
+        enabled: yes
+    - name: Ensure Jenkins is installed
+      yum:
+        name: jenkins
+        update_cache: yes
+        state: present
+    - name: Enable and start the jenkins service
+      service:
+        name: jenkins
+        enabled: yes
+        state: started
+    - name: Open Firewall Port
+      firewalld:
+        zone: public
+        port: 8080/tcp
+        permanent: true
+        state: enabled
+        immediate: true
+...
